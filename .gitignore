@@ -1,0 +1,26 @@
+# Dependencies
+vendor/
+composer.phar
+composer-setup.php
+
+# Environment & config
+.env
+config/app.php
+config/database.php
+
+# Storage (logs, cache, SQLite)
+storage/*.sqlite
+storage/logs/*
+storage/cache/*
+!storage/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+
+# Session files
+sessions/
