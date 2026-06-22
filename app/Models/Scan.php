@@ -26,7 +26,6 @@ class Scan extends Model
             'completed_at' => date('Y-m-d H:i:s'),
             'result_summary' => $summary
         ]);
-        // Update target status
         $scan = self::find($scanId);
         if ($scan) {
             Target::updateStatus($scan['target_id'], $status === 'completed' ? 'completed' : 'failed');

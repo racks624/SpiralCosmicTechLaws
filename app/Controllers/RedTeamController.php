@@ -26,49 +26,82 @@ class RedTeamController extends Controller
         $this->json(['success' => true, 'id' => $id]);
     }
 
+    public function editTarget(Request $request)
+    {
+        $id = $request->input('id');
+        $data = $request->only(['name', 'target_type', 'target_value', 'description', 'status']);
+        if (!$id) $this->json(['error' => 'ID required'], 400);
+        $target = Target::find($id);
+        if (!$target) $this->json(['error' => 'Target not found'], 404);
+        Target::update($id, $data);
+        $this->json(['success' => true]);
+    }
+
+    public function viewTarget(Request $request)
+    {
+        $id = $request->input('id');
+        if (!$id) $this->json(['error' => 'ID required'], 400);
+        $target = Target::find($id);
+        if (!$target) $this->json(['error' => 'Target not found'], 404);
+        // Get scans and findings
+        $scans = Scan::where('target_id', $id);
+        $findings = Finding::where('scan_id', $scans[0]['id'] ?? 0);
+        $this->json(['target' => $target, 'scans' => $scans, 'findings' => $findings]);
+    }
+
+    public function uploadTargets(Request $request)
+    {
+        $file = $_FILES['csv_file'] ?? null;
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) {
+            $this->json(['error' => 'Upload failed'], 400);
+        }
+        $handle = fopen($file['tmp_name'], 'r');
+        $headers = fgetcsv($handle);
+        $count = 0;
+        while (($row = fgetcsv($handle)) !== false) {
+            $data = array_combine($headers, $row);
+            if (isset($data['name']) && isset($data['target_value'])) {
+                Target::create([
+                    'name' => $data['name'],
+                    'target_type' => $data['target_type'] ?? 'ip',
+                    'target_value' => $data['target_value'],
+                    'description' => $data['description'] ?? '',
+                    'status' => 'pending'
+                ]);
+                $count++;
+            }
+        }
+        fclose($handle);
+        $this->json(['success' => true, 'imported' => $count]);
+    }
+
     public function runScan(Request $request)
     {
         $targetId = $request->input('target_id');
         $scanType = $request->input('scan_type', 'full');
         $target = Target::find($targetId);
-        if (!$target) {
-            $this->json(['error' => 'Target not found'], 404);
-        }
-        // Start scan record
-        $scanId = Scan::startScan($targetId, $scanType);
-        Target::updateStatus($targetId, 'scanning');
-
-        // Perform actual scanning based on type
-        $findings = [];
-        if ($scanType === 'full' || $scanType === 'port') {
+        if (!$target) $this->json(['error' => 'Target not found'], 404);
+        if ($scanType === 'full') {
+            $scanId = ScanEngine::fullScanWithMitre($targetId, $target['target_value'], $target['target_type']);
+            $this->json(['status' => 'scan_started', 'scan_id' => $scanId]);
+        } else {
+            $scanId = Scan::startScan($targetId, $scanType);
+            Target::updateStatus($targetId, 'scanning');
             $openPorts = ScanEngine::portScan($target['target_value']);
             foreach ($openPorts as $port) {
-                $service = ScanEngine::serviceFingerprint($target['target_value'], $port);
-                $findingTitle = "Open port: {$port}";
-                $findingDesc = "Service: {$service['service']} - Banner: {$service['banner']}";
-                $findings[] = Finding::addFinding($scanId, 'info', $findingTitle, $findingDesc, '', 'Consider closing unnecessary ports');
+                $fingerprint = ScanEngine::serviceFingerprint($target['target_value'], $port);
+                Finding::addFinding($scanId, 'info', "Open port: {$port}",
+                    "Service: {$fingerprint['service']} - Banner: {$fingerprint['banner']}");
             }
+            Scan::completeScan($scanId, 'completed', "Found " . count($openPorts) . " open ports");
+            $this->json(['status' => 'scan_completed', 'open_ports' => $openPorts]);
         }
-        if ($scanType === 'full' || $scanType === 'web') {
-            if ($target['target_type'] === 'url' || in_array(80, $openPorts) || in_array(443, $openPorts)) {
-                $protocol = (in_array(443, $openPorts)) ? 'https' : 'http';
-                $url = ($target['target_type'] === 'url') ? $target['target_value'] : "{$protocol}://{$target['target_value']}";
-                $webFindings = ScanEngine::webScan($url);
-                foreach ($webFindings as $wf) {
-                    $findings[] = Finding::addFinding($scanId, $wf['severity'], $wf['title'], $wf['description'], $wf['cve_id'] ?? '', $wf['recommendation'] ?? '');
-                }
-            }
-        }
-        Scan::completeScan($scanId, 'completed', "Found " . count($findings) . " issues");
-        $this->json(['status' => 'scan_completed', 'findings_count' => count($findings)]);
     }
 
     public function getFindings(Request $request)
     {
         $targetId = $request->input('target_id');
-        if (!$targetId) {
-            $this->json(['error' => 'No target_id'], 400);
-        }
+        if (!$targetId) $this->json(['error' => 'No target_id'], 400);
         $sql = "SELECT f.*, s.scan_type FROM redteam_findings f JOIN redteam_scans s ON f.scan_id = s.id WHERE s.target_id = ? ORDER BY 
                 CASE f.severity 
                     WHEN 'critical' THEN 1 
@@ -93,5 +126,21 @@ class RedTeamController extends Controller
     {
         $scans = Scan::all();
         $this->json(['scans' => $scans]);
+    }
+
+    public function exportFindings(Request $request)
+    {
+        $targetId = $request->input('target_id');
+        if (!$targetId) $this->json(['error' => 'Target ID required'], 400);
+        $findings = Finding::where('scan_id', $targetId); // simplified
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="findings.csv"');
+        $out = fopen('php://output', 'w');
+        fputcsv($out, ['Severity', 'Title', 'Description', 'CVE', 'MITRE Tactic', 'Risk Score']);
+        foreach ($findings as $f) {
+            fputcsv($out, [$f['severity'], $f['title'], $f['description'], $f['cve_id'], $f['mitre_tactic'], $f['risk_score']]);
+        }
+        fclose($out);
+        exit;
     }
 }

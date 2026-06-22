@@ -1,0 +1,10 @@
+{
+  "CVE-2017-0144": {"tactic": "Lateral Movement", "technique": "T1021", "cvss": 8.5},
+  "CVE-2019-0708": {"tactic": "Execution", "technique": "T1203", "cvss": 9.8},
+  "CVE-2021-44228": {"tactic": "Initial Access", "technique": "T1190", "cvss": 10.0},
+  "CVE-2020-1472": {"tactic": "Privilege Escalation", "technique": "T1068", "cvss": 9.0},
+  "CVE-2021-26855": {"tactic": "Initial Access", "technique": "T1190", "cvss": 9.1},
+  "CVE-2021-34527": {"tactic": "Execution", "technique": "T1059", "cvss": 8.8},
+  "CVE-2020-1350": {"tactic": "Lateral Movement", "technique": "T1021", "cvss": 10.0},
+  "CVE-2021-40444": {"tactic": "Execution", "technique": "T1204", "cvss": 8.8}
+}

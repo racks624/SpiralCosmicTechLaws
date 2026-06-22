@@ -43,7 +43,6 @@ class Router
 
     public function middleware($middleware, $callback)
     {
-        // Register middleware for a group (simplified)
         $this->middlewares[] = ['middleware' => $middleware, 'callback' => $callback];
     }
 
@@ -59,16 +58,14 @@ class Router
 
         foreach ($this->routes as $route) {
             if ($route['uri'] === $uri && $route['method'] === $method) {
-                // Apply global middlewares
                 foreach ($this->middlewares as $mw) {
                     $result = call_user_func($mw['middleware'], $request);
                     if ($result === false) {
                         http_response_code(403);
-                        echo "Forbidden";
+                        echo json_encode(['error' => 'Forbidden']);
                         return;
                     }
                 }
-
                 $handler = $route['handler'];
                 if (is_string($handler) && strpos($handler, '@') !== false) {
                     [$controller, $action] = explode('@', $handler);
@@ -86,8 +83,12 @@ class Router
                 throw new \Exception("Invalid route handler");
             }
         }
+
+        // 404 – render cosmic 404 view
         http_response_code(404);
-        echo json_encode(['error' => 'Route not found']);
+        $controller = new \App\Controllers\Controller();
+        $controller->view('error/404', ['title' => 'Cosmic Drift – 404']);
+        exit;
     }
 
     public function route($name, $params = [])
