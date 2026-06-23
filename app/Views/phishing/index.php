@@ -76,170 +76,170 @@
 </div>
 
 <!-- ============================================================ -->
-<!-- ====== ALL COSMIC MODALS (SCROLLABLE) ====== -->
+<!-- ====== ALL COSMIC MODALS ====== -->
 
-<!-- Modal: Campaign (Create/Edit/View) -->
-<div id="campaignModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6">
+<!-- Modal: Campaign (Create/Edit/View) – full‑screen for Create -->
+<div id="campaignModal" class="modal-overlay">
+    <div class="modal-content <?= (isset($_GET['action']) && $_GET['action'] === 'create') ? 'modal-fullscreen' : '' ?>">
         <h2 id="campaignModalTitle" class="text-2xl font-bold cosmic-glow-text mb-4">Campaign Details</h2>
-        <form id="campaignForm" class="w-full">
+        <form id="campaignForm">
             <input type="hidden" id="campaignFormId">
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Name</label>
-                <input type="text" id="campaignFormName" class="cosmic-input w-full" required>
+                <label>Name</label>
+                <input type="text" id="campaignFormName" class="cosmic-input" required>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Type</label>
-                <select id="campaignFormType" class="cosmic-input w-full">
+                <label>Type</label>
+                <select id="campaignFormType" class="cosmic-input">
                     <option value="phishing">Phishing</option>
                     <option value="marketing">Marketing</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Platform</label>
-                <select id="campaignFormPlatform" class="cosmic-input w-full">
+                <label>Platform</label>
+                <select id="campaignFormPlatform" class="cosmic-input">
                     <option value="email">Email</option>
                     <option value="sms">SMS</option>
                     <option value="social">Social</option>
                 </select>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">From Name</label>
-                <input type="text" id="campaignFormFromName" class="cosmic-input w-full">
+                <label>From Name</label>
+                <input type="text" id="campaignFormFromName" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">From Email</label>
-                <input type="email" id="campaignFormFromEmail" class="cosmic-input w-full">
+                <label>From Email</label>
+                <input type="email" id="campaignFormFromEmail" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Reply-To</label>
-                <input type="email" id="campaignFormReplyTo" class="cosmic-input w-full">
+                <label>Reply-To</label>
+                <input type="email" id="campaignFormReplyTo" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Template (HTML)</label>
-                <textarea id="campaignFormTemplate" class="cosmic-input w-full" rows="4"></textarea>
+                <label>Template (HTML)</label>
+                <textarea id="campaignFormTemplate" class="cosmic-input" rows="4"></textarea>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Targets (comma separated)</label>
-                <input type="text" id="campaignFormTargets" class="cosmic-input w-full">
+                <label>Targets (comma separated)</label>
+                <input type="text" id="campaignFormTargets" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Status</label>
-                <select id="campaignFormStatus" class="cosmic-input w-full">
+                <label>Status</label>
+                <select id="campaignFormStatus" class="cosmic-input">
                     <option value="draft">Draft</option>
                     <option value="active">Active</option>
                     <option value="completed">Completed</option>
                 </select>
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" id="campaignFormSubmit" class="cosmic-btn flex-1 min-w-[100px]">Save</button>
-                <button type="button" onclick="closeModal('campaignModal')" class="cosmic-btn flex-1 min-w-[100px]">Cancel</button>
+                <button type="submit" id="campaignFormSubmit" class="cosmic-btn flex-1">Save</button>
+                <button type="button" onclick="closeModal('campaignModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal: Confirm Delete -->
-<div id="confirmModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
+<div id="confirmModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 id="confirmTitle" class="text-xl font-bold cosmic-glow-text mb-4">Confirm</h2>
         <p id="confirmMessage" class="text-green-300 mb-4">Are you sure?</p>
         <div class="flex flex-wrap gap-2">
-            <button id="confirmYes" class="cosmic-btn flex-1 min-w-[100px]">Yes</button>
-            <button onclick="closeModal('confirmModal')" class="cosmic-btn flex-1 min-w-[100px]">Cancel</button>
+            <button id="confirmYes" class="cosmic-btn flex-1">Yes</button>
+            <button onclick="closeModal('confirmModal')" class="cosmic-btn flex-1">Cancel</button>
         </div>
     </div>
 </div>
 
 <!-- Modal: Share -->
-<div id="shareModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
+<div id="shareModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 class="text-xl font-bold cosmic-glow-text mb-4">Shareable Link</h2>
         <p class="text-green-300 text-sm mb-2">Copy the link below to share this campaign.</p>
         <div class="flex flex-wrap gap-2">
-            <input type="text" id="shareLinkInput" class="cosmic-input flex-1 min-w-[150px]" readonly>
+            <input type="text" id="shareLinkInput" class="cosmic-input flex-1" readonly>
             <button onclick="copyShareLink()" class="cosmic-btn"><i class="fas fa-copy"></i> Copy</button>
         </div>
         <div class="flex flex-wrap gap-2 mt-4">
-            <button onclick="closeModal('shareModal')" class="cosmic-btn flex-1 min-w-[100px]">Close</button>
+            <button onclick="closeModal('shareModal')" class="cosmic-btn flex-1">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Modal: Send Email -->
-<div id="sendEmailModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-md max-h-[90vh] overflow-y-auto p-6">
+<div id="sendEmailModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 class="text-xl font-bold cosmic-glow-text mb-4">Send Emails</h2>
-        <form id="sendEmailForm" class="w-full">
+        <form id="sendEmailForm">
             <input type="hidden" id="sendEmailCampaignId">
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">SMTP Host</label>
-                <input type="text" id="sendSmtpHost" placeholder="smtp.example.com" class="cosmic-input w-full">
+                <label>SMTP Host</label>
+                <input type="text" id="sendSmtpHost" placeholder="smtp.example.com" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">SMTP Port</label>
-                <input type="number" id="sendSmtpPort" placeholder="587" class="cosmic-input w-full">
+                <label>SMTP Port</label>
+                <input type="number" id="sendSmtpPort" placeholder="587" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">SMTP User</label>
-                <input type="text" id="sendSmtpUser" placeholder="user@example.com" class="cosmic-input w-full">
+                <label>SMTP User</label>
+                <input type="text" id="sendSmtpUser" placeholder="user@example.com" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">SMTP Password</label>
-                <input type="password" id="sendSmtpPass" class="cosmic-input w-full">
+                <label>SMTP Password</label>
+                <input type="password" id="sendSmtpPass" class="cosmic-input">
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="cosmic-btn flex-1 min-w-[100px]">Send</button>
-                <button type="button" onclick="closeModal('sendEmailModal')" class="cosmic-btn flex-1 min-w-[100px]">Cancel</button>
+                <button type="submit" class="cosmic-btn flex-1">Send</button>
+                <button type="button" onclick="closeModal('sendEmailModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Modal: Template (Create/Edit) -->
-<div id="templateModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+<!-- Modal: Template -->
+<div id="templateModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 id="templateModalTitle" class="text-xl font-bold cosmic-glow-text mb-4">Template</h2>
-        <form id="templateForm" class="w-full">
+        <form id="templateForm">
             <input type="hidden" id="templateFormId">
             <input type="hidden" id="templateFormCampaignId">
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Name</label>
-                <input type="text" id="templateFormName" class="cosmic-input w-full" required>
+                <label>Name</label>
+                <input type="text" id="templateFormName" class="cosmic-input" required>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Subject</label>
-                <input type="text" id="templateFormSubject" class="cosmic-input w-full">
+                <label>Subject</label>
+                <input type="text" id="templateFormSubject" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Body (HTML)</label>
-                <textarea id="templateFormBody" class="cosmic-input w-full" rows="5"></textarea>
+                <label>Body (HTML)</label>
+                <textarea id="templateFormBody" class="cosmic-input" rows="5"></textarea>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">A/B Group</label>
-                <select id="templateFormAbGroup" class="cosmic-input w-full">
+                <label>A/B Group</label>
+                <select id="templateFormAbGroup" class="cosmic-input">
                     <option value="A">A</option>
                     <option value="B">B</option>
                     <option value="C">C</option>
                 </select>
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="cosmic-btn flex-1 min-w-[100px]">Save</button>
-                <button type="button" onclick="closeModal('templateModal')" class="cosmic-btn flex-1 min-w-[100px]">Cancel</button>
+                <button type="submit" class="cosmic-btn flex-1">Save</button>
+                <button type="button" onclick="closeModal('templateModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal: Social Post -->
-<div id="socialModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+<div id="socialModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 class="text-xl font-bold cosmic-glow-text mb-4">New Social Post</h2>
-        <form id="socialForm" class="w-full">
+        <form id="socialForm">
             <input type="hidden" id="socialFormCampaignId">
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Platform</label>
-                <select id="socialFormPlatform" class="cosmic-input w-full">
+                <label>Platform</label>
+                <select id="socialFormPlatform" class="cosmic-input">
                     <option value="facebook">Facebook</option>
                     <option value="instagram">Instagram</option>
                     <option value="twitter">Twitter / X</option>
@@ -249,49 +249,49 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Content</label>
-                <textarea id="socialFormContent" class="cosmic-input w-full" rows="4" required></textarea>
+                <label>Content</label>
+                <textarea id="socialFormContent" class="cosmic-input" rows="4" required></textarea>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Image URL (optional)</label>
-                <input type="text" id="socialFormImage" class="cosmic-input w-full">
+                <label>Image URL (optional)</label>
+                <input type="text" id="socialFormImage" class="cosmic-input">
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Schedule (YYYY-MM-DD HH:MM:SS)</label>
-                <input type="text" id="socialFormSchedule" class="cosmic-input w-full" placeholder="e.g. 2026-07-01 14:30:00">
+                <label>Schedule (YYYY-MM-DD HH:MM:SS)</label>
+                <input type="text" id="socialFormSchedule" class="cosmic-input" placeholder="e.g. 2026-07-01 14:30:00">
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="cosmic-btn flex-1 min-w-[100px]">Create</button>
-                <button type="button" onclick="closeModal('socialModal')" class="cosmic-btn flex-1 min-w-[100px]">Cancel</button>
+                <button type="submit" class="cosmic-btn flex-1">Create</button>
+                <button type="button" onclick="closeModal('socialModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Modal: Send SMS -->
-<div id="smsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
-    <div class="cosmic-glass-modal w-full max-w-lg max-h-[90vh] overflow-y-auto p-6">
+<div id="smsModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 class="text-xl font-bold cosmic-glow-text mb-4">Send SMS</h2>
-        <form id="smsForm" class="w-full">
+        <form id="smsForm">
             <input type="hidden" id="smsFormCampaignId">
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Phone Numbers (one per line)</label>
-                <textarea id="smsFormPhones" class="cosmic-input w-full" rows="4" required></textarea>
+                <label>Phone Numbers (one per line)</label>
+                <textarea id="smsFormPhones" class="cosmic-input" rows="4" required></textarea>
             </div>
             <div class="mb-3">
-                <label class="block text-green-400 font-semibold mb-1">Message</label>
-                <textarea id="smsFormMessage" class="cosmic-input w-full" rows="3" required></textarea>
+                <label>Message</label>
+                <textarea id="smsFormMessage" class="cosmic-input" rows="3" required></textarea>
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="cosmic-btn flex-1 min-w-[100px]">Send</button>
-                <button type="button" onclick="closeModal('smsModal')" class="cosmic-btn flex-1 min-w-[100px]">Cancel</button>
+                <button type="submit" class="cosmic-btn flex-1">Send</button>
+                <button type="button" onclick="closeModal('smsModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Toast notification -->
-<div id="toast" class="fixed bottom-6 right-6 cosmic-glass-modal p-4 rounded-xl hidden z-50"></div>
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 right-6 cosmic-glass p-4 rounded-xl hidden z-50"></div>
 
 <script>
 // ============================================================
@@ -299,7 +299,7 @@
 function showToast(message, type = 'success') {
     const toast = document.getElementById('toast');
     toast.textContent = message;
-    toast.className = 'fixed bottom-6 right-6 cosmic-glass-modal p-4 rounded-xl z-50';
+    toast.className = 'fixed bottom-6 right-6 cosmic-glass p-4 rounded-xl z-50';
     if (type === 'error') toast.style.borderColor = '#ef4444';
     else toast.style.borderColor = '#00ff88';
     toast.classList.remove('hidden');
@@ -307,11 +307,11 @@ function showToast(message, type = 'success') {
 }
 
 function closeModal(id) {
-    document.getElementById(id).classList.add('hidden');
+    document.getElementById(id).classList.remove('active');
 }
 
 function openModal(id) {
-    document.getElementById(id).classList.remove('hidden');
+    document.getElementById(id).classList.add('active');
 }
 
 // ============================================================
@@ -385,12 +385,15 @@ fetchCampaigns(1);
 setInterval(() => fetchCampaigns(currentPage), 30000);
 
 // ============================================================
-// ===== CAMPAIGN MODAL (Create / Edit / View) =====
+// ===== CAMPAIGN MODAL =====
 function openCreateCampaignModal() {
     document.getElementById('campaignForm').reset();
     document.getElementById('campaignFormId').value = '';
     document.getElementById('campaignModalTitle').innerText = '✨ New Campaign';
     document.getElementById('campaignFormSubmit').innerText = 'Create';
+    // Set modal to full‑screen for create
+    const modalContent = document.querySelector('#campaignModal .modal-content');
+    modalContent.classList.add('modal-fullscreen');
     document.getElementById('campaignForm').style.display = 'block';
     document.getElementById('campaignFormSubmit').style.display = 'block';
     openModal('campaignModal');
@@ -412,6 +415,9 @@ async function editCampaign(id) {
     document.getElementById('campaignFormTargets').value = c.targets || '';
     document.getElementById('campaignFormStatus').value = c.status || 'draft';
     document.getElementById('campaignFormSubmit').innerText = 'Save';
+    // Remove full‑screen for edit (use normal dialog)
+    const modalContent = document.querySelector('#campaignModal .modal-content');
+    modalContent.classList.remove('modal-fullscreen');
     document.getElementById('campaignForm').style.display = 'block';
     document.getElementById('campaignFormSubmit').style.display = 'block';
     openModal('campaignModal');
@@ -490,6 +496,9 @@ async function viewCampaign(id) {
     }
     html += '</div>';
     document.getElementById('campaignModalTitle').innerText = `👁️ View Campaign #${c.id}`;
+    // Remove full‑screen for view
+    const modalContent = document.querySelector('#campaignModal .modal-content');
+    modalContent.classList.remove('modal-fullscreen');
     document.getElementById('campaignForm').style.display = 'none';
     document.getElementById('campaignFormSubmit').style.display = 'none';
     document.getElementById('campaignForm').innerHTML = html;
@@ -670,7 +679,8 @@ document.getElementById('templateForm').addEventListener('submit', async functio
 });
 
 // ============================================================
-// ===== SOCIAL =====
+// ===== SOCIAL, SMS, TRACKING, ANALYTICS =====
+// (kept from previous version – unchanged)
 async function fetchSocial() {
     const campaignId = document.getElementById('socialCampaignId').value;
     if (!campaignId) { showToast('Enter Campaign ID', 'error'); return; }
@@ -723,8 +733,6 @@ async function deleteSocial(id) {
     else showToast('Error deleting', 'error');
 }
 
-// ============================================================
-// ===== SMS =====
 async function fetchSms() {
     const campaignId = document.getElementById('smsCampaignId').value;
     if (!campaignId) { showToast('Enter Campaign ID', 'error'); return; }
@@ -766,8 +774,6 @@ document.getElementById('smsForm').addEventListener('submit', async function(e) 
     }
 });
 
-// ============================================================
-// ===== TRACKING =====
 async function fetchTracks() {
     const campaignId = document.getElementById('trackingCampaignId').value;
     const type = document.getElementById('trackingType').value;
@@ -791,8 +797,6 @@ async function fetchTracks() {
     document.getElementById('trackingData').innerHTML = html;
 }
 
-// ============================================================
-// ===== ANALYTICS =====
 async function fetchAnalytics() {
     const campaignId = document.getElementById('analyticsCampaignId').value;
     let url = '/phishing/stats';
@@ -833,121 +837,43 @@ async function fetchAnalytics() {
 
 // ============================================================
 // ===== MODAL CLOSE ON OVERLAY =====
-document.querySelectorAll('.fixed.inset-0').forEach(modal => {
+document.querySelectorAll('.modal-overlay').forEach(modal => {
     modal.addEventListener('click', function(e) {
         if (e.target === this) {
-            this.classList.add('hidden');
+            this.classList.remove('active');
         }
     });
 });
+</script>
 
-// ============================================================
-// ===== COSMIC INPUT & MODAL STYLES =====
-const style = document.createElement('style');
-style.textContent = `
-    /* Base cosmic input */
-    .cosmic-input {
-        background: rgba(0,0,0,0.6);
-        border: 1px solid #00ff88;
-        color: #a7f3d0;
-        border-radius: 0.75rem;
-        padding: 0.5rem 0.75rem;
-        width: 100%;
-        outline: none;
-        transition: all 0.3s;
-        box-sizing: border-box;
+<style>
+/* Full‑screen modal for Create Campaign only */
+.modal-fullscreen {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    padding: 2rem !important;
+    overflow-y: auto !important;
+    background: rgba(10,5,32,0.95);
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.modal-fullscreen form {
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+}
+@media (max-width: 640px) {
+    .modal-fullscreen {
+        padding: 1rem !important;
+    }
+    .modal-fullscreen form {
         max-width: 100%;
     }
-    .cosmic-input:focus {
-        border-color: #fbbf24;
-        box-shadow: 0 0 20px rgba(0,255,136,0.15);
-    }
-    /* Modal container */
-    .cosmic-glass-modal {
-        background: rgba(10,5,32,0.85);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(0,255,136,0.2);
-        border-radius: 1.5rem;
-        box-shadow: 0 8px 32px 0 rgba(0,0,0,0.8), inset 0 0 40px rgba(0,255,136,0.05);
-        overflow-x: hidden;
-        word-wrap: break-word;
-        width: 95%;
-        max-width: 800px;
-        margin: 0 auto;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-    .cosmic-glass-modal label {
-        font-weight: 600;
-        color: #00ff88;
-        text-shadow: 0 0 20px rgba(0,255,136,0.2);
-        display: block;
-        margin-bottom: 0.25rem;
-    }
-    .cosmic-glass-modal h2 {
-        text-shadow: 0 0 30px rgba(0,255,136,0.3);
-    }
-    .cosmic-glass-modal .cosmic-btn {
-        background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(251,191,36,0.1));
-        border: 1px solid rgba(0,255,136,0.2);
-        backdrop-filter: blur(8px);
-        transition: all 0.3s ease;
-        font-weight: 600;
-        color: #d1d5db;
-        padding: 0.5rem 1.5rem;
-        border-radius: 0.75rem;
-        cursor: pointer;
-        font-family: 'Exo 2', sans-serif;
-        box-sizing: border-box;
-        text-align: center;
-        white-space: nowrap;
-    }
-    .cosmic-glass-modal .cosmic-btn:hover {
-        background: linear-gradient(135deg, rgba(0,255,136,0.25), rgba(251,191,36,0.2));
-        border-color: #fbbf24;
-        box-shadow: 0 0 30px rgba(0,255,136,0.15);
-        transform: scale(1.02);
-        color: #fff;
-    }
-    .cosmic-glass-modal .cosmic-btn:active {
-        transform: scale(0.98);
-    }
-    .active-tab {
-        background: linear-gradient(135deg, rgba(0,255,136,0.2), rgba(251,191,36,0.2)) !important;
-        border-color: #00ff88 !important;
-    }
-    .cosmic-glass-modal form {
-        width: 100%;
-    }
-    .cosmic-glass-modal .flex {
-        flex-wrap: wrap;
-    }
-    /* Responsive tweaks */
-    @media (max-width: 640px) {
-        .cosmic-glass-modal {
-            width: 98%;
-            max-width: 100%;
-            padding: 1rem;
-            max-height: 95vh;
-        }
-        .cosmic-glass-modal .cosmic-btn {
-            width: 100%;
-            white-space: normal;
-            margin-bottom: 0.5rem;
-        }
-        .cosmic-glass-modal .flex.gap-2 {
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .cosmic-glass-modal .flex.gap-2 .cosmic-btn {
-            flex: none;
-            width: 100%;
-        }
-        .cosmic-glass-modal .min-w-\\[100px\\] {
-            min-width: auto;
-        }
-    }
-`;
-document.head.appendChild(style);
-</script>
+}
+</style>
 <?php $content = ob_get_clean(); require_once __DIR__ . '/../layout.php'; ?>

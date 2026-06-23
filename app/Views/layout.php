@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'Spiral Cosmic Tech Laws' ?> | Divine Cosmic</title>
     
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -98,7 +99,7 @@
         }
         .content-area {
             flex: 1;
-            min-width: 0; /* critical for flex shrinking */
+            min-width: 0;
             overflow-x: auto;
         }
         .sidebar-wrapper {
@@ -166,14 +167,99 @@
             border-color: #00ff88;
             box-shadow: 0 0 20px rgba(0,255,136,0.1);
         }
-        /* Table wrapper */
-        .table-wrapper {
-            overflow-x: auto;
-            width: 100%;
+        /* ---- Modal fixes ---- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
         }
-        .table-wrapper table {
-            min-width: 600px;
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(10,5,32,0.9);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0,255,136,0.2);
+            border-radius: 1.5rem;
+            box-shadow: 0 8px 32px 0 rgba(0,0,0,0.8), inset 0 0 40px rgba(0,255,136,0.05);
+            max-width: 800px;
             width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            box-sizing: border-box;
+        }
+        @media (max-width: 640px) {
+            .modal-content {
+                max-width: 98%;
+                padding: 1rem;
+                max-height: 95vh;
+            }
+        }
+        .modal-content label {
+            font-weight: 600;
+            color: #00ff88;
+            text-shadow: 0 0 20px rgba(0,255,136,0.2);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .modal-content h2 {
+            text-shadow: 0 0 30px rgba(0,255,136,0.3);
+        }
+        .modal-content .cosmic-btn {
+            background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(251,191,36,0.1));
+            border: 1px solid rgba(0,255,136,0.2);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #d1d5db;
+            padding: 0.5rem 1.5rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-family: 'Exo 2', sans-serif;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .modal-content .cosmic-btn:hover {
+            background: linear-gradient(135deg, rgba(0,255,136,0.25), rgba(251,191,36,0.2));
+            border-color: #fbbf24;
+            box-shadow: 0 0 30px rgba(0,255,136,0.15);
+            transform: scale(1.02);
+            color: #fff;
+        }
+        .modal-content .cosmic-btn:active {
+            transform: scale(0.98);
+        }
+        .modal-content .flex {
+            flex-wrap: wrap;
+        }
+        .modal-content .cosmic-input {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #00ff88;
+            color: #a7f3d0;
+            border-radius: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+            outline: none;
+            transition: all 0.3s;
+            box-sizing: border-box;
+            max-width: 100%;
+        }
+        .modal-content .cosmic-input:focus {
+            border-color: #fbbf24;
+            box-shadow: 0 0 20px rgba(0,255,136,0.15);
+        }
+        .modal-content .mb-3 {
+            margin-bottom: 0.75rem;
+        }
+        .modal-content .gap-2 {
+            gap: 0.5rem;
         }
     </style>
 </head>
@@ -208,7 +294,7 @@
 
         <!-- Main Content -->
         <main class="content-area">
-            <!-- Top bar: Search, notifications, quick actions -->
+            <!-- Top bar -->
             <div class="flex flex-wrap items-center gap-3 mb-4">
                 <button class="mobile-toggle cosmic-btn p-2 rounded-xl" onclick="toggleSidebar()">
                     <i class="fas fa-bars"></i>
@@ -268,7 +354,7 @@
                 p.style.height = size + 'px';
                 p.style.left = Math.random() * 100 + '%';
                 p.style.animationDuration = (Math.random() * 25 + 15) + 's';
-                p.style.animationDelay = (Math.random() * 25) + 's';
+                p.style.animationDelay = (Math.random() * 20) + 's';
                 if (Math.random() > 0.5) p.style.background = 'radial-gradient(circle at center, rgba(251,191,36,0.25), transparent)';
                 container.appendChild(p);
             }

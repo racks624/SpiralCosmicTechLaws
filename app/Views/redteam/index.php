@@ -3,12 +3,8 @@
     <div class="flex justify-between items-center mb-6 flex-wrap gap-2">
         <h1 class="text-3xl font-bold cosmic-glow-text">🔴 RedTeam Operations</h1>
         <div class="flex gap-2">
-            <button onclick="document.getElementById('addTargetModal').classList.remove('hidden')" class="cosmic-btn">
-                <i class="fas fa-plus"></i> Add Target
-            </button>
-            <button onclick="document.getElementById('uploadModal').classList.remove('hidden')" class="cosmic-btn">
-                <i class="fas fa-upload"></i> Upload CSV
-            </button>
+            <button onclick="openAddTargetModal()" class="cosmic-btn"><i class="fas fa-plus"></i> Add Target</button>
+            <button onclick="openUploadModal()" class="cosmic-btn"><i class="fas fa-upload"></i> Upload CSV</button>
         </div>
     </div>
 
@@ -39,71 +35,72 @@
     </div>
 </div>
 
-<!-- Add Target Modal -->
-<div id="addTargetModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="cosmic-glass p-6 rounded-2xl w-96 max-w-full">
+<!-- Modal: Add Target -->
+<div id="addTargetModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 class="text-xl mb-4 cosmic-glow-text">New Target</h2>
         <form id="addTargetForm">
-            <input type="text" name="name" placeholder="Name" class="mb-2" required>
-            <select name="target_type" class="mb-2">
-                <option value="ip">IP</option><option value="domain">Domain</option><option value="url">URL</option>
-            </select>
-            <input type="text" name="target_value" placeholder="Value" class="mb-2" required>
-            <textarea name="description" placeholder="Description" class="mb-4"></textarea>
-            <div class="flex gap-2">
+            <div class="mb-3"><label>Name</label><input type="text" name="name" class="cosmic-input" required></div>
+            <div class="mb-3"><label>Type</label><select name="target_type" class="cosmic-input"><option value="ip">IP</option><option value="domain">Domain</option><option value="url">URL</option></select></div>
+            <div class="mb-3"><label>Value</label><input type="text" name="target_value" class="cosmic-input" required></div>
+            <div class="mb-3"><label>Description</label><textarea name="description" class="cosmic-input" rows="3"></textarea></div>
+            <div class="flex gap-2 mt-4">
                 <button type="submit" class="cosmic-btn flex-1">Add</button>
-                <button type="button" onclick="document.getElementById('addTargetModal').classList.add('hidden')" class="cosmic-btn">Cancel</button>
+                <button type="button" onclick="closeModal('addTargetModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Upload CSV Modal -->
-<div id="uploadModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="cosmic-glass p-6 rounded-2xl w-96 max-w-full">
+<!-- Modal: Upload CSV -->
+<div id="uploadModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 class="text-xl mb-4 cosmic-glow-text">Upload CSV</h2>
         <form id="uploadForm" enctype="multipart/form-data">
-            <input type="file" name="csv_file" accept=".csv" class="mb-4" required>
-            <div class="flex gap-2">
+            <div class="mb-3"><label>CSV File</label><input type="file" name="csv_file" accept=".csv" class="cosmic-input" required></div>
+            <div class="flex gap-2 mt-4">
                 <button type="submit" class="cosmic-btn flex-1">Upload</button>
-                <button type="button" onclick="document.getElementById('uploadModal').classList.add('hidden')" class="cosmic-btn">Cancel</button>
+                <button type="button" onclick="closeModal('uploadModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- View/Edit Modal -->
-<div id="viewEditModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center z-50">
-    <div class="cosmic-glass p-6 rounded-2xl w-96 max-w-full">
+<!-- Modal: View/Edit -->
+<div id="viewEditModal" class="modal-overlay">
+    <div class="modal-content">
         <h2 id="veTitle" class="text-xl mb-4 cosmic-glow-text">Target Details</h2>
         <div id="veContent"></div>
         <div class="flex gap-2 mt-4">
             <button onclick="saveEdit()" class="cosmic-btn flex-1">Save</button>
-            <button type="button" onclick="document.getElementById('viewEditModal').classList.add('hidden')" class="cosmic-btn">Close</button>
+            <button type="button" onclick="closeModal('viewEditModal')" class="cosmic-btn flex-1">Close</button>
         </div>
     </div>
 </div>
 
 <script>
-// Add Target
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+
+function openAddTargetModal() { openModal('addTargetModal'); }
+function openUploadModal() { openModal('uploadModal'); }
+
 document.getElementById('addTargetForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
     const res = await fetch('/redteam/add', { method: 'POST', body: fd });
-    if (res.ok) location.reload();
+    if (res.ok) { closeModal('addTargetModal'); location.reload(); }
     else alert('Error adding target');
 });
 
-// Upload CSV
 document.getElementById('uploadForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target);
     const res = await fetch('/redteam/upload', { method: 'POST', body: fd });
-    if (res.ok) location.reload();
+    if (res.ok) { closeModal('uploadModal'); location.reload(); }
     else alert('Upload failed');
 });
 
-// Run Scan
 async function runScan(id) {
     const fd = new FormData(); fd.append('target_id', id);
     const res = await fetch('/redteam/scan', { method: 'POST', body: fd });
@@ -112,7 +109,6 @@ async function runScan(id) {
     if (data.status) location.reload();
 }
 
-// View Target
 async function viewTarget(id) {
     const res = await fetch(`/redteam/view?id=${id}`);
     const data = await res.json();
@@ -123,35 +119,30 @@ async function viewTarget(id) {
         <p><strong>Description:</strong> ${data.target.description || 'N/A'}</p>
         <hr><h4>Findings:</h4>`;
     if (data.findings && data.findings.length) {
-        data.findings.forEach(f => {
-            html += `<div class="border-b border-white/10 py-1">[${f.severity}] ${f.title}</div>`;
-        });
-    } else {
-        html += '<p>No findings.</p>';
-    }
+        data.findings.forEach(f => { html += `<div class="border-b border-white/10 py-1">[${f.severity}] ${f.title}</div>`; });
+    } else { html += '<p>No findings.</p>'; }
     html += '</div>';
     document.getElementById('veContent').innerHTML = html;
     document.getElementById('veTitle').innerText = 'View Target';
-    document.getElementById('viewEditModal').classList.remove('hidden');
+    openModal('viewEditModal');
     window._editId = null;
 }
 
-// Edit Target
 async function editTarget(id) {
     const res = await fetch(`/redteam/view?id=${id}`);
     const data = await res.json();
     const t = data.target;
     let html = `
         <input type="hidden" id="editId" value="${t.id}">
-        <div><label>Name</label><input type="text" id="editName" value="${t.name}" class="mb-2"></div>
-        <div><label>Type</label><select id="editType" class="mb-2">
+        <div class="mb-3"><label>Name</label><input type="text" id="editName" value="${t.name}" class="cosmic-input"></div>
+        <div class="mb-3"><label>Type</label><select id="editType" class="cosmic-input">
             <option value="ip" ${t.target_type=='ip'?'selected':''}>IP</option>
             <option value="domain" ${t.target_type=='domain'?'selected':''}>Domain</option>
             <option value="url" ${t.target_type=='url'?'selected':''}>URL</option>
         </select></div>
-        <div><label>Value</label><input type="text" id="editValue" value="${t.target_value}" class="mb-2"></div>
-        <div><label>Description</label><textarea id="editDesc" class="mb-2">${t.description || ''}</textarea></div>
-        <div><label>Status</label><select id="editStatus" class="mb-2">
+        <div class="mb-3"><label>Value</label><input type="text" id="editValue" value="${t.target_value}" class="cosmic-input"></div>
+        <div class="mb-3"><label>Description</label><textarea id="editDesc" class="cosmic-input">${t.description || ''}</textarea></div>
+        <div class="mb-3"><label>Status</label><select id="editStatus" class="cosmic-input">
             <option value="pending" ${t.status=='pending'?'selected':''}>Pending</option>
             <option value="scanning" ${t.status=='scanning'?'selected':''}>Scanning</option>
             <option value="completed" ${t.status=='completed'?'selected':''}>Completed</option>
@@ -160,11 +151,10 @@ async function editTarget(id) {
     `;
     document.getElementById('veContent').innerHTML = html;
     document.getElementById('veTitle').innerText = 'Edit Target';
-    document.getElementById('viewEditModal').classList.remove('hidden');
+    openModal('viewEditModal');
     window._editId = id;
 }
 
-// Save Edit
 async function saveEdit() {
     const id = window._editId || document.getElementById('editId').value;
     if (!id) return;
@@ -176,16 +166,11 @@ async function saveEdit() {
         description: document.getElementById('editDesc').value,
         status: document.getElementById('editStatus').value
     };
-    const res = await fetch('/redteam/edit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    });
-    if (res.ok) location.reload();
+    const res = await fetch('/redteam/edit', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    if (res.ok) { closeModal('viewEditModal'); location.reload(); }
     else alert('Error updating target');
 }
 
-// Delete Target
 async function deleteTarget(id) {
     if (!confirm('Delete target and all associated data?')) return;
     const fd = new FormData(); fd.append('target_id', id);

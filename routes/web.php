@@ -185,3 +185,40 @@ $router->post('/phishing/track/conversion', 'PhishingController@trackConversion'
 // Analytics
 $router->get('/phishing/stats', 'PhishingController@getStats');
 $router->get('/phishing/metrics', 'PhishingController@getMetrics');
+// Phishing Campaigns
+$router->get('/phishing', 'PhishingController@index');
+$router->post('/phishing/campaign', 'PhishingController@createCampaign');
+$router->post('/phishing/edit', 'PhishingController@editCampaign');
+$router->get('/phishing/view', 'PhishingController@viewCampaign');
+$router->get('/phishing/campaigns', 'PhishingController@listCampaigns');
+$router->get('/phishing/export', 'PhishingController@exportCampaign');
+$router->post('/phishing/duplicate', 'PhishingController@duplicateCampaign');
+$router->post('/phishing/delete', 'PhishingController@deleteCampaign');
+
+// Templates
+$router->get('/phishing/templates', 'PhishingController@listTemplates');
+$router->post('/phishing/template/create', 'PhishingController@createTemplate');
+$router->post('/phishing/template/edit', 'PhishingController@editTemplate');
+$router->post('/phishing/template/delete', 'PhishingController@deleteTemplate');
+
+// Social
+$router->get('/phishing/social', 'PhishingController@listSocial');
+$router->post('/phishing/social/create', 'PhishingController@createSocial');
+$router->post('/phishing/social/delete', 'PhishingController@deleteSocial');
+
+// SMS
+$router->get('/phishing/sms', 'PhishingController@listSms');
+$router->post('/phishing/send-sms', 'PhishingController@sendSms');
+
+// Email sending
+$router->post('/phishing/send-email', 'PhishingController@sendEmails');
+
+// Tracking
+$router->get('/phishing/tracks', 'PhishingController@listTracks');
+$router->get('/phishing/track/open', 'PhishingController@trackOpen');
+$router->get('/phishing/track/click', 'PhishingController@trackClick');
+$router->post('/phishing/track/conversion', 'PhishingController@trackConversion');
+
+// Analytics
+$router->get('/phishing/stats', 'PhishingController@getStats');
+$router->get('/phishing/metrics', 'PhishingController@getMetrics');
