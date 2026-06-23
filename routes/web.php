@@ -222,3 +222,19 @@ $router->post('/phishing/track/conversion', 'PhishingController@trackConversion'
 // Analytics
 $router->get('/phishing/stats', 'PhishingController@getStats');
 $router->get('/phishing/metrics', 'PhishingController@getMetrics');
+// Files Management
+$router->get('/files', 'FilesController@index');
+$router->get('/files/list', 'FilesController@list');
+$router->get('/files/view', 'FilesController@view');
+$router->post('/files/edit', 'FilesController@edit');
+$router->post('/files/delete', 'FilesController@delete');
+$router->get('/files/share', 'FilesController@share');
+$router->get('/files/download', 'FilesController@download');
+// Files Management
+$router->get('/files', 'FilesController@index');
+$router->get('/files/list', 'FilesController@list');
+$router->get('/files/show', 'FilesController@show');
+$router->post('/files/edit', 'FilesController@edit');
+$router->post('/files/delete', 'FilesController@delete');
+$router->get('/files/share', 'FilesController@share');
+$router->get('/files/download', 'FilesController@download');

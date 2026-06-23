@@ -17,11 +17,4 @@ class CampaignTrack extends Model
         }
         return self::query($sql, [$campaignId])->fetchAll();
     }
-
-    public static function getStats($campaignId)
-    {
-        $sql = "SELECT track_type, COUNT(*) as count FROM campaign_tracks WHERE campaign_id = ? GROUP BY track_type";
-        $stmt = self::query($sql, [$campaignId]);
-        return $stmt->fetchAll();
-    }
 }

@@ -37,7 +37,7 @@ class PhishingService
         EmailTemplate::delete($id);
     }
 
-    // ---- Email Sending with A/B Testing ----
+    // ---- Email Sending ----
     public static function sendEmails($campaignId, $smtpConfig)
     {
         $campaign = Campaign::find($campaignId);
@@ -121,18 +121,23 @@ class PhishingService
         $sent = 0;
         $errors = [];
         foreach ($phoneNumbers as $phone) {
-            $result = self::sendSingleSms($phone, $message);
-            if ($result) {
-                SmsLog::create([
-                    'campaign_id' => $campaignId,
-                    'phone' => $phone,
-                    'message' => $message,
-                    'status' => 'sent',
-                    'sent_at' => date('Y-m-d H:i:s')
-                ]);
-                $sent++;
-            } else {
-                $errors[] = "Failed to send SMS to $phone";
+            if (empty($phone)) continue;
+            try {
+                $result = self::sendSingleSms($phone, $message);
+                if ($result) {
+                    SmsLog::create([
+                        'campaign_id' => $campaignId,
+                        'phone' => $phone,
+                        'message' => $message,
+                        'status' => 'sent',
+                        'sent_at' => date('Y-m-d H:i:s')
+                    ]);
+                    $sent++;
+                } else {
+                    $errors[] = "Failed to send SMS to $phone";
+                }
+            } catch (\Exception $e) {
+                $errors[] = "Error sending to $phone: " . $e->getMessage();
             }
         }
         Campaign::update($campaignId, ['sent_count' => ($campaign['sent_count'] ?? 0) + $sent]);
@@ -142,7 +147,7 @@ class PhishingService
 
     private static function sendSingleSms($phone, $message)
     {
-        // Implement Twilio or other SMS gateway here.
+        // Stub: implement Twilio or other SMS gateway here.
         return true;
     }
 

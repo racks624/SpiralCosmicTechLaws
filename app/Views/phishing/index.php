@@ -189,7 +189,7 @@
                 <input type="password" id="sendSmtpPass" class="cosmic-input">
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="cosmic-btn flex-1">Send</button>
+                <button type="submit" class="cosmic-btn flex-1" id="sendEmailBtn">Send</button>
                 <button type="button" onclick="closeModal('sendEmailModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
@@ -283,7 +283,7 @@
                 <textarea id="smsFormMessage" class="cosmic-input" rows="3" required></textarea>
             </div>
             <div class="flex flex-wrap gap-2 mt-4">
-                <button type="submit" class="cosmic-btn flex-1">Send</button>
+                <button type="submit" class="cosmic-btn flex-1" id="sendSmsBtn">Send</button>
                 <button type="button" onclick="closeModal('smsModal')" class="cosmic-btn flex-1">Cancel</button>
             </div>
         </form>
@@ -391,7 +391,6 @@ function openCreateCampaignModal() {
     document.getElementById('campaignFormId').value = '';
     document.getElementById('campaignModalTitle').innerText = '✨ New Campaign';
     document.getElementById('campaignFormSubmit').innerText = 'Create';
-    // Set modal to full‑screen for create
     const modalContent = document.querySelector('#campaignModal .modal-content');
     modalContent.classList.add('modal-fullscreen');
     document.getElementById('campaignForm').style.display = 'block';
@@ -415,7 +414,6 @@ async function editCampaign(id) {
     document.getElementById('campaignFormTargets').value = c.targets || '';
     document.getElementById('campaignFormStatus').value = c.status || 'draft';
     document.getElementById('campaignFormSubmit').innerText = 'Save';
-    // Remove full‑screen for edit (use normal dialog)
     const modalContent = document.querySelector('#campaignModal .modal-content');
     modalContent.classList.remove('modal-fullscreen');
     document.getElementById('campaignForm').style.display = 'block';
@@ -496,7 +494,6 @@ async function viewCampaign(id) {
     }
     html += '</div>';
     document.getElementById('campaignModalTitle').innerText = `👁️ View Campaign #${c.id}`;
-    // Remove full‑screen for view
     const modalContent = document.querySelector('#campaignModal .modal-content');
     modalContent.classList.remove('modal-fullscreen');
     document.getElementById('campaignForm').style.display = 'none';
@@ -546,6 +543,10 @@ async function sendEmails(id) {
 
 document.getElementById('sendEmailForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    const btn = document.getElementById('sendEmailBtn');
+    const originalText = btn.innerText;
+    btn.innerText = 'Sending...';
+    btn.disabled = true;
     const campaignId = document.getElementById('sendEmailCampaignId').value;
     const data = {
         campaign_id: campaignId,
@@ -571,6 +572,8 @@ document.getElementById('sendEmailForm').addEventListener('submit', async functi
     } catch (e) {
         showToast('Network error', 'error');
     }
+    btn.innerText = originalText;
+    btn.disabled = false;
 });
 
 // ============================================================
@@ -680,7 +683,6 @@ document.getElementById('templateForm').addEventListener('submit', async functio
 
 // ============================================================
 // ===== SOCIAL, SMS, TRACKING, ANALYTICS =====
-// (kept from previous version – unchanged)
 async function fetchSocial() {
     const campaignId = document.getElementById('socialCampaignId').value;
     if (!campaignId) { showToast('Enter Campaign ID', 'error'); return; }
@@ -762,6 +764,10 @@ function openSendSmsModal() {
 
 document.getElementById('smsForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    const btn = document.getElementById('sendSmsBtn');
+    const originalText = btn.innerText;
+    btn.innerText = 'Sending...';
+    btn.disabled = true;
     const fd = new FormData(this);
     const res = await fetch('/phishing/send-sms', { method: 'POST', body: fd });
     const result = await res.json();
@@ -772,6 +778,8 @@ document.getElementById('smsForm').addEventListener('submit', async function(e) 
     } else {
         showToast(result.error || 'Error sending SMS', 'error');
     }
+    btn.innerText = originalText;
+    btn.disabled = false;
 });
 
 async function fetchTracks() {
@@ -847,7 +855,6 @@ document.querySelectorAll('.modal-overlay').forEach(modal => {
 </script>
 
 <style>
-/* Full‑screen modal for Create Campaign only */
 .modal-fullscreen {
     width: 100vw !important;
     height: 100vh !important;

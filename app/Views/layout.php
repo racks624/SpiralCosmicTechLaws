@@ -283,6 +283,8 @@
                     <a href="/virtuallab" class="cosmic-nav-link flex items-center gap-3 p-3 rounded-xl"><i class="fas fa-flask w-5"></i> <span>VirtualLab</span></a>
                     <a href="/payload" class="cosmic-nav-link flex items-center gap-3 p-3 rounded-xl"><i class="fas fa-biohazard w-5"></i> <span>Payload Gen</span></a>
                     <a href="/matrix" class="cosmic-nav-link flex items-center gap-3 p-3 rounded-xl"><i class="fas fa-braille w-5"></i> <span>MITRE Matrix</span></a>
+                    <a href="/files" class="cosmic-nav-link flex items-center gap-3 p-3 rounded-xl"><i class="fas fa-folder w-5"></i> <span>Files</span></a>
+                    <a href="/files" class="cosmic-nav-link flex items-center gap-3 p-3 rounded-xl"><i class="fas fa-folder w-5"></i> <span>Files</span></a>
                 </nav>
             </div>
             <div class="p-6 border-t border-white/10">
