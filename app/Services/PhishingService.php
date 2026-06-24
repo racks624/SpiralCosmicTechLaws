@@ -37,8 +37,8 @@ class PhishingService
         EmailTemplate::delete($id);
     }
 
-    // ---- Email Sending ----
-    public static function sendEmails($campaignId, $smtpConfig)
+    // ---- Email Sending (using EmailService) ----
+    public static function sendEmails($campaignId, $smtpConfig = null)
     {
         $campaign = Campaign::find($campaignId);
         if (!$campaign) return ['error' => 'Campaign not found'];
@@ -50,6 +50,7 @@ class PhishingService
             $templates = [['subject' => $campaign['name'], 'body' => $campaign['template'] ?? '']];
         }
 
+        $emailService = new EmailService();
         $sent = 0;
         $errors = [];
         foreach ($targets as $index => $email) {
@@ -58,10 +59,7 @@ class PhishingService
             $subject = $template['subject'] ?? $campaign['name'];
             $body = $template['body'] ?? "Test email from campaign {$campaign['name']}";
 
-            $headers = "From: {$campaign['from_name']} <{$campaign['from_email']}>\r\n";
-            if ($campaign['reply_to']) $headers .= "Reply-To: {$campaign['reply_to']}\r\n";
-            $headers .= "MIME-Version: 1.0\r\n";
-            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            // Add tracking pixel and click tracking
             $trackUrl = getenv('APP_URL') . "/phishing/track/open?campaign_id={$campaignId}";
             $body .= "<img src='{$trackUrl}' width='1' height='1' />";
             $clickUrl = getenv('APP_URL') . "/phishing/track/click?campaign_id={$campaignId}&url=";
@@ -69,12 +67,20 @@ class PhishingService
                 return '<a href="' . $clickUrl . urlencode($matches[1]) . '"';
             }, $body);
 
-            if (@mail($email, $subject, $body, $headers)) {
+            try {
+                $emailService->send(
+                    $email,
+                    $subject,
+                    $body,
+                    $campaign['from_email'] ?? '',
+                    $campaign['from_name'] ?? ''
+                );
                 $sent++;
-            } else {
-                $errors[] = "Failed to send to $email";
+            } catch (\Exception $e) {
+                $errors[] = "Failed to send to $email: " . $e->getMessage();
             }
         }
+
         Campaign::update($campaignId, [
             'sent_count' => ($campaign['sent_count'] ?? 0) + $sent,
             'emails_sent' => ($campaign['emails_sent'] ?? 0) + $sent
@@ -83,7 +89,7 @@ class PhishingService
         return ['status' => 'sent', 'count' => $sent, 'errors' => $errors];
     }
 
-    // ---- Social Media ----
+    // ---- Social Media (already implemented, uses stubs) ----
     public static function postToSocial($campaignId, $platform, $content, $imageUrl = null, $scheduledAt = null)
     {
         $data = [
@@ -109,46 +115,44 @@ class PhishingService
 
     private static function executeSocialPost($platform, $content, $image)
     {
-        // In production, integrate with actual APIs.
+        // In production, integrate with actual APIs (Facebook, Twitter, etc.)
+        // For now, we simulate success.
         return true;
     }
 
-    // ---- SMS ----
+    // ---- SMS Sending (using SmsService) ----
     public static function sendSms($campaignId, $phoneNumbers, $message)
     {
         $campaign = Campaign::find($campaignId);
         if (!$campaign) return ['error' => 'Campaign not found'];
+        $smsService = new SmsService();
         $sent = 0;
         $errors = [];
         foreach ($phoneNumbers as $phone) {
             if (empty($phone)) continue;
             try {
-                $result = self::sendSingleSms($phone, $message);
-                if ($result) {
-                    SmsLog::create([
-                        'campaign_id' => $campaignId,
-                        'phone' => $phone,
-                        'message' => $message,
-                        'status' => 'sent',
-                        'sent_at' => date('Y-m-d H:i:s')
-                    ]);
-                    $sent++;
-                } else {
-                    $errors[] = "Failed to send SMS to $phone";
-                }
+                $smsService->send($phone, $message);
+                SmsLog::create([
+                    'campaign_id' => $campaignId,
+                    'phone' => $phone,
+                    'message' => $message,
+                    'status' => 'sent',
+                    'sent_at' => date('Y-m-d H:i:s')
+                ]);
+                $sent++;
             } catch (\Exception $e) {
-                $errors[] = "Error sending to $phone: " . $e->getMessage();
+                $errors[] = "Failed to send SMS to $phone: " . $e->getMessage();
+                SmsLog::create([
+                    'campaign_id' => $campaignId,
+                    'phone' => $phone,
+                    'message' => $message,
+                    'status' => 'failed',
+                ]);
             }
         }
         Campaign::update($campaignId, ['sent_count' => ($campaign['sent_count'] ?? 0) + $sent]);
         CampaignMetric::record($campaignId, 'sms_sent', $sent);
         return ['status' => 'sent', 'count' => $sent, 'errors' => $errors];
-    }
-
-    private static function sendSingleSms($phone, $message)
-    {
-        // Stub: implement Twilio or other SMS gateway here.
-        return true;
     }
 
     // ---- Tracking ----

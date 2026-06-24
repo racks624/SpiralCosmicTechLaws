@@ -4,16 +4,17 @@
     "type": "project",
     "require": {
         "php": ">=8.1",
-        "ext-pdo": "*",
+        "ext-curl": "*",
         "ext-json": "*",
         "ext-openssl": "*",
-        "ext-curl": "*",
         "ext-pcntl": "*",
-        "predis/predis": "^2.0",
+        "ext-pdo": "*",
         "cboden/ratchet": "^0.4",
+        "dompdf/dompdf": "^2.0",
+        "phpmailer/phpmailer": "^7.1",
+        "predis/predis": "^2.0",
         "react/event-loop": "^1.5",
-        "react/socket": "^1.16",
-        "dompdf/dompdf": "^2.0"
+        "react/socket": "^1.16"
     },
     "autoload": {
         "psr-4": {
