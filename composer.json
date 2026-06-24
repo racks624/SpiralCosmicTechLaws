@@ -1,20 +1,20 @@
 {
     "name": "spiral/cosmic-tech-laws",
-    "description": "Industrial-grade RedTeam & C2 Framework with MITRE, Redis, WebSockets, and PDF Reporting",
+    "description": "Industrial-grade RedTeam & C2 Framework with MITRE, Redis, WebSockets, PDF Reporting, and Enterprise Phishing",
     "type": "project",
     "require": {
         "php": ">=8.1",
-        "ext-curl": "*",
+        "ext-pdo": "*",
         "ext-json": "*",
         "ext-openssl": "*",
+        "ext-curl": "*",
         "ext-pcntl": "*",
-        "ext-pdo": "*",
-        "cboden/ratchet": "^0.4",
-        "dompdf/dompdf": "^2.0",
-        "phpmailer/phpmailer": "^7.1",
         "predis/predis": "^2.0",
+        "cboden/ratchet": "^0.4",
         "react/event-loop": "^1.5",
-        "react/socket": "^1.16"
+        "react/socket": "^1.16",
+        "dompdf/dompdf": "^2.0",
+        "phpmailer/phpmailer": "^6.8"
     },
     "autoload": {
         "psr-4": {

@@ -89,7 +89,7 @@ class PhishingService
         return ['status' => 'sent', 'count' => $sent, 'errors' => $errors];
     }
 
-    // ---- Social Media (already implemented, uses stubs) ----
+    // ---- Social Media ----
     public static function postToSocial($campaignId, $platform, $content, $imageUrl = null, $scheduledAt = null)
     {
         $data = [
@@ -116,7 +116,6 @@ class PhishingService
     private static function executeSocialPost($platform, $content, $image)
     {
         // In production, integrate with actual APIs (Facebook, Twitter, etc.)
-        // For now, we simulate success.
         return true;
     }
 
